@@ -11,21 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rumah', function (Blueprint $table) {
+        Schema::create('detail_pembayaran', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->enum('Status_Rumah', ['Dihuni', 'Tidak Dihuni']);
-            $table->string('penghuni_id');
+            $table->string('pembayaran_id');
+            $table->decimal('Iuran_Satpam', 10, 2);
+            $table->decimal('Iuran_Kebersihan', 10, 2);
+            $table->integer('Tahun')->nullable();
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('rumah');
+        Schema::dropIfExists('detail_pembayaran');
+
     }
 };

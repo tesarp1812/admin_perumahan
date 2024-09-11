@@ -15,9 +15,6 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('penghuni_id');
             $table->date('Tanggal_Pembayaran');
-            $table->decimal('Iuran_Satpam', 10, 2);
-            $table->decimal('Iuran_Kebersihan', 10, 2);
-            $table->integer('Tahun')->nullable();
             $table->timestamps();
         });
     }

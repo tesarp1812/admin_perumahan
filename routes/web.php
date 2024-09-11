@@ -20,3 +20,9 @@ $router->get('/', function () use ($router) {
 $router->get('penghuni', 'PenghuniController@getPenghuni');
 $router->post('penghuni', 'PenghuniController@store');
 $router->put('penghuni/{id}', 'PenghuniController@update');
+
+
+$router->get('rumah', 'RumahController@index');
+$router->post('rumah', 'RumahController@store');
+$router->put('rumah/{id}', 'RumahController@update');
+$router->delete('rumah/{id}', 'RumahController@destroy');
