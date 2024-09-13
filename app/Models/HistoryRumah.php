@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Rumah extends Model
+class HistoryRumah extends Model
 {
-    protected $table = 'rumah';
+    protected $table = 'history_penghuni_rumah';
 
     protected $primaryKey = 'id';
     public $incrementing = false;
@@ -14,10 +14,9 @@ class Rumah extends Model
 
     protected $fillable = [
         'id',
-        'no_rumah',
-        'Status_Rumah',
-        'penghuni_id'
+        'rumah_id',
+        'penghuni_id',
+        'Tanggal_Mulai',
+        'Tanggal_Selesai'
     ];
-
-
 }

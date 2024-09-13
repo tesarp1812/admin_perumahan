@@ -26,3 +26,8 @@ $router->get('rumah', 'RumahController@index');
 $router->post('rumah', 'RumahController@store');
 $router->put('rumah/{id}', 'RumahController@update');
 $router->delete('rumah/{id}', 'RumahController@destroy');
+
+
+$router->get('rumah/history', 'AdministrasiController@HistoryRumah');
+$router->get('pembayaran', 'AdministrasiController@dataPembayaran');
+
