@@ -18,130 +18,94 @@ class DatabaseSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
-        // Arrays to store penghuni IDs
-        $tetapPenghuniIds = [];
-        $kontrakPenghuniIds = [];
-
-        // Insert penghuni
+        // Insert warga
+        $wargaIds = [];
         for ($i = 0; $i < 30; $i++) {
-            $penghuniId = Str::uuid();
-            $statusPenghuni = $faker->boolean ? 'Tetap' : 'Kontrak';
+            $wargaId = Str::uuid();
+            $wargaIds[] = $wargaId; // Save ID for later use
             $statusMenikah = $faker->boolean ? 'Ya' : 'Tidak';
 
-            DB::table('penghuni')->insert([
-                'id' => $penghuniId,
-                'Nama_Lengkap' => $faker->name,
-                'Status_Penghuni' => $statusPenghuni,
+            DB::table('warga')->insert([
+                'id' => $wargaId,
+                'nama' => $faker->name,
+                'Foto_KTP' => 'test',
                 'Nomor_Telepon' => $faker->phoneNumber,
                 'Status_Menikah' => $statusMenikah,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-
-            // Collect IDs based on status
-            if ($statusPenghuni === 'Tetap') {
-                $tetapPenghuniIds[] = $penghuniId;
-            } elseif ($statusPenghuni === 'Kontrak') {
-                $kontrakPenghuniIds[] = $penghuniId;
-            }
         }
 
-        // Check if we have enough penghuni with 'Tetap' status
-        if (count($tetapPenghuniIds) === 0) {
-            throw new \Exception('No penghuni with status "Tetap" found.');
-        }
-
-        // Check if we have enough penghuni with 'Kontrak' status
-        if (count($kontrakPenghuniIds) === 0) {
-            throw new \Exception('No penghuni with status "Kontrak" found.');
-        }
-
-        // Insert rumah with penghuni having 'Tetap' status
-        $historyData = [];
-        for ($i = 0; $i < 15; $i++) {
-            $rumahId = Str::uuid();
-            $randomPenghuniId = $tetapPenghuniIds[array_rand($tetapPenghuniIds)];
+        // Insert rumah
+        $rumahIds = [];
+        $totalRumah = 20;
+        for ($i = 0; $i < $totalRumah; $i++) {
+            $rumahID = Str::uuid();
+            $rumahIds[] = $rumahID; // Save ID for later use
 
             DB::table('rumah')->insert([
-                'id' => $rumahId,
+                'id' => $rumahID,
                 'no_rumah' => ($i + 1),
-                'Status_Rumah' => 'Dihuni',
-                'penghuni_id' => $randomPenghuniId,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-
-            // Add entry to history_penghuni_rumah
-            $historyData[] = [
-                'id' => Str::uuid(),
-                'rumah_id' => $rumahId,
-                'penghuni_id' => $randomPenghuniId,
-                'Tanggal_Mulai' => now()->toDateString(), // Assuming the start date is now for 'Tetap'
-                'Tanggal_Selesai' => null, // No end date for 'Tetap'
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
         }
 
-        // Insert rumah with penghuni having 'Kontrak' status
-        for ($i = 0; $i < 5; $i++) {
-            $rumahId = Str::uuid();
-            $randomPenghuniId = $kontrakPenghuniIds[array_rand($kontrakPenghuniIds)];
+        // Insert penghuni
+        $statusPenghuni = array_merge(
+            array_fill(0, 15, 'Tetap'), // 15 "Tetap" status
+            array_fill(0, 5, 'Kontrak') // 5 "Kontrak" status
+        );
+        shuffle($statusPenghuni); // Shuffle statuses to distribute them randomly
 
+        foreach ($rumahIds as $rumahId) {
+            $numPenghuni = $faker->numberBetween(2, 5); // Minimum 2 penghuni per rumah, maximum 5
 
-            DB::table('rumah')->insert([
-                'id' => $rumahId,
-                'no_rumah' => ($i + 16),
-                'Status_Rumah' => 'Dihuni',
-                'penghuni_id' => $randomPenghuniId,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            for ($j = 0; $j < $numPenghuni; $j++) {
+                // Check if we have enough statusPenghuni left
+                if (count($statusPenghuni) === 0) {
+                    break;
+                }
 
-            // Add entry to history_penghuni_rumah
-            $historyData[] = [
-                'id' => Str::uuid(),
-                'rumah_id' => $rumahId,
-                'penghuni_id' => $randomPenghuniId,
-                'Tanggal_Mulai' => now()->toDateString(), // Assuming the start date is now for 'Kontrak'
-                'Tanggal_Selesai' => now()->addMonth(6)->toDateString(), // End date assumed to be 6 months from now
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }
+                // Take one status from the shuffled array
+                $status = array_shift($statusPenghuni);
 
-        // Insert history data into history_penghuni_rumah
-        DB::table('history_penghuni_rumah')->insert($historyData);
+                // Get random warga
+                $wargaId = $faker->randomElement($wargaIds);
+                $penghuniId = Str::uuid();
 
-        // Insert pembayaran and detail pembayaran
-        for ($i = 0; $i < 5; $i++) {
-            // Create a new pembayaran entry
-            $pembayaranId = Str::uuid();
-            $penghuniId = $tetapPenghuniIds[array_rand($tetapPenghuniIds)]; // Randomly pick a 'Tetap' penghuni
+                // Set end_date based on status
+                $endDate = $status === 'Tetap' ? null : $faker->dateTimeBetween('+1 week', '+20 weeks')->format('Y-m-d H:i:s');
 
-            DB::table('pembayaran')->insert([
-                'id' => $pembayaranId,
-                'penghuni_id' => $penghuniId,
-                'Tanggal_Pembayaran' => now()->format('Y-m-d'),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            // Create detail pembayaran entries
-            $detailData = [];
-            for ($j = 0; $j < 3; $j++) {
-                $detailData[] = [
-                    'id' => Str::uuid(),
-                    'pembayaran_id' => $pembayaranId,
-                    'Iuran_Satpam' => $faker->randomFloat(2, 50000, 150000), // Random amount between 50,000 and 150,000
-                    'Iuran_Kebersihan' => $faker->randomFloat(2, 25000, 75000), // Random amount between 25,000 and 75,000
-                    'Tahun' => '2024',
+                DB::table('penghuni')->insert([
+                    'id' => $penghuniId,
+                    'warga_id' => $wargaId,
+                    'rumah_id' => $rumahId,
+                    'Status_Penghuni' => $status,
+                    'start_date' => $faker->dateTimeBetween('-20 weeks', '-15 weeks')->format('Y-m-d H:i:s'),
+                    'end_date' => $endDate,
                     'created_at' => now(),
                     'updated_at' => now(),
-                ];
+                ]);
             }
-
-            DB::table('detail_pembayaran')->insert($detailData);
         }
+
+
+        // Insert iuran
+        DB::table('iuran')->insert([
+            'id' => (string) Str::uuid(),
+            'nama_iuran' => "Iuran Satpam",
+            'harga' => 100000,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('iuran')->insert([
+            'id' => (string) Str::uuid(),
+            'nama_iuran' => "Iuran Kebersihan",
+            'harga' => 15000,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
     }
 }

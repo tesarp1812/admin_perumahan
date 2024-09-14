@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Penghuni;
+use App\Models\Rumah;
+use App\Models\Warga;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
@@ -11,39 +13,36 @@ use Illuminate\Support\Facades\Validator;
 
 class PenghuniController extends Controller
 {
-    /**
-     * Retrieve the user for the given ID.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        return Penghuni::findOrFail($id);
-    }
 
-    public function getPenghuni()
+    public function getWarga()
     {
-        $penghuni = Penghuni::all();
-        if ($penghuni->isEmpty()) {
+        $warga = Warga::all();
+
+        if ($warga->isEmpty()) {
             return response()->json(['error' => 'Data Not Found'], Response::HTTP_UNAUTHORIZED);
         }
-        return response()->json($penghuni);
+
+        return response()->json($warga);
     }
 
-    /**
-     * Store a newly created penghuni in storage.
+    public function getWargaById($id)
+    {
+        $warga = Warga::findOrFail($id);
+
+        return response()->json($warga);
+    }
+
+     /**
+     * Store a newly created warga in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function storeWarga(Request $request)
     {
         // Validasi data yang diterima dari request
         $validator = Validator::make($request->all(), [
-            'Nama_Lengkap' => 'required|string|max:255',
-            'Status_Penghuni' => 'required|in:Kontrak,Tetap',
-            'Nomor_Telepon' => 'nullable|string|max:20',
+            'nama' => 'required|string|max:255',
             'Status_Menikah' => 'required|in:Ya,Tidak',
         ]);
 
@@ -63,114 +62,51 @@ class PenghuniController extends Controller
             $fotoKTPPath = $request->file('Foto_KTP')->store('foto_ktp', 'public');
         }
 
-        // Menyimpan data penghuni
-        $penghuni = Penghuni::create([
+        // Menyimpan data warga
+        $warga = Warga::create([
             'id' => (string) Str::uuid(),
-            'Nama_Lengkap' => $validatedData['Nama_Lengkap'],
+            'nama' => $validatedData['nama'],
             'Foto_KTP' => $fotoKTPPath,
-            'Status_Penghuni' => $validatedData['Status_Penghuni'],
-            'Nomor_Telepon' => $validatedData['Nomor_Telepon'],
+            'Nomor_Telepon' => $request->input('Nomor_Telepon'),
             'Status_Menikah' => $validatedData['Status_Menikah'],
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        // Mengirimkan respon sukses dengan data penghuni yang baru dibuat
-        return response()->json($penghuni, Response::HTTP_CREATED);
+        // Mengirimkan respon sukses dengan data warga yang baru dibuat
+        return response()->json($warga, Response::HTTP_CREATED);
     }
 
-
-    /**
-     * Update the specified penghuni in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function getRumah()
     {
-        // Validasi data yang diterima dari request
-        $validator = Validator::make($request->all(), [
-            'Nama_Lengkap' => 'required|string|max:255',
-            'Status_Penghuni' => 'required|in:Kontrak,Tetap',
-            'Nomor_Telepon' => 'nullable|string|max:20',
-            'Status_Menikah' => 'required|in:Ya,Tidak',
-        ]);
+        $rumah = Rumah::orderBy('no_rumah', 'asc')->get();
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+        if ($rumah->isEmpty()) {
+            return response()->json(['error' => 'Data Not Found'], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Temukan penghuni berdasarkan ID
-        $penghuni = Penghuni::where('id', $id)->first();
+        return response()->json($rumah);
+    }
 
-        if (!$penghuni) {
-            return response()->json(['message' => 'User not found'], 404);
+    public function getRumahById($id)
+    {
+        $rumah = Rumah::findOrFail($id);
+
+        return response()->json($rumah);
+    }
+
+    public function getPenghuni()
+    {
+        $penghuni = Penghuni::all();
+        if ($penghuni->isEmpty()) {
+            return response()->json(['error' => 'Data Not Found'], Response::HTTP_UNAUTHORIZED);
         }
-
-        // Perbarui data penghuni
-        $penghuni->update([
-            'Nama_Lengkap' => $request['Nama_Lengkap'],
-            'Foto_KTP' => $request['Foto_KTP'],
-            'Status_Penghuni' => $request['Status_Penghuni'],
-            'Nomor_Telepon' => $request['Nomor_Telepon'],
-            'Status_Menikah' => $request['Status_Menikah'],
-            'updated_at' => now(),
-        ]);
-
-        // Mengirimkan respon sukses dengan data penghuni yang diperbarui
         return response()->json($penghuni);
     }
 
-
-    // Remove the specified user from storage
-    public function destroy(Request $request, $id)
+    public function getPenghuniById($id)
     {
-
-        $penghuni = Penghuni::find($id);
-
-        if (!$penghuni) {
-            return response()->json(['message' => 'penghuni not found'], 404);
-        }
-
-        $penghuni->delete();
-
-        return response()->json(['message' => 'penghuni deleted successfully']);
+        return Penghuni::findOrFail($id);
     }
 
-
-    /**
-     * Decode base64 image and save it to storage.
-     *
-     * @param  string  $base64Image
-     * @param  string  $prefix
-     * @return string|null
-     */
-    private function decodeBase64Image($base64String, $filePrefix)
-    {
-        // Pisahkan header dan data base64
-        $imageData = explode(',', $base64String);
-        if (count($imageData) !== 2) {
-            throw new \Exception('Invalid base64 image format');
-        }
-
-        // Ambil data base64
-        $base64Image = $imageData[1];
-
-        // Decode data base64
-        $imageData = base64_decode($base64Image);
-
-        // Tentukan ekstensi file berdasarkan header (misalnya, 'data:image/jpeg;base64' -> 'jpeg')
-        $imageType = explode(';', explode(':', $imageData[0])[1])[0];
-        $extension = explode('/', $imageType)[1];
-
-        // Buat nama file unik
-        $fileName = $filePrefix . '_' . time() . '.' . $extension;
-
-        // Simpan file ke disk menggunakan Storage facade
-        $filePath = 'uploads/' . $fileName;
-        Storage::put($filePath, $imageData);
-
-        return $filePath;
-    }
 }

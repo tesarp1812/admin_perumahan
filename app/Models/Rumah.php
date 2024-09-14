@@ -15,8 +15,6 @@ class Rumah extends Model
     protected $fillable = [
         'id',
         'no_rumah',
-        'Status_Rumah',
-        'penghuni_id'
     ];
 
 

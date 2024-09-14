@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('rumah', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->integer('no_rumah');
-            $table->enum('Status_Rumah', ['Dihuni', 'Tidak Dihuni']);
-            $table->string('penghuni_id');
             $table->timestamps();
         });
     }

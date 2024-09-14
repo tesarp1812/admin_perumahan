@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('detail_pembayaran', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('pembayaran_id');
-            $table->decimal('Iuran_Satpam', 10, 2);
-            $table->decimal('Iuran_Kebersihan', 10, 2);
+            $table->string('iuran_id');
             $table->integer('Tahun')->nullable();
             $table->timestamps();
         });

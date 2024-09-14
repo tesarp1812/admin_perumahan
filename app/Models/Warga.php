@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DetailPembayaran extends Model
+class Warga extends Model
 {
-    protected $table = 'detail_pembayaran';
+    protected $table = 'warga';
 
     protected $primaryKey = 'id';
     public $incrementing = false;
@@ -14,10 +14,9 @@ class DetailPembayaran extends Model
 
     protected $fillable = [
         'id',
-        'pembayaran_id',
-        'iuran_id',
-        'Tahun'
+        'nama',
+        'Foto_KTP',
+        'Nomor_Telepon',
+        'Status_Menikah'
     ];
-
-
 }

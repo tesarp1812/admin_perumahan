@@ -14,11 +14,11 @@ class Penghuni extends Model
 
     protected $fillable = [
         'id',
-        'Nama_Lengkap',
-        'Foto_KTP',
+        'warga_id',
+        'rumah_id',
         'Status_Penghuni',
-        'Nomor_Telepon',
-        'Status_Menikah'
+        'start_date',
+        'end_date'
     ];
 
 

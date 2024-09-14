@@ -17,17 +17,14 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+$router->get('warga', 'PenghuniController@getWarga');
+$router->get('warga/{id}', 'PenghuniController@getWargaById');
+$router->post('warga', 'PenghuniController@storeWarga');
+$router->get('rumah', 'PenghuniController@getRumah');
+$router->get('rumah/{id}', 'PenghuniController@getRumahById');
 $router->get('penghuni', 'PenghuniController@getPenghuni');
-$router->post('penghuni', 'PenghuniController@store');
-$router->put('penghuni/{id}', 'PenghuniController@update');
+$router->get('penghuni/{id}', 'PenghuniController@getPenghuniById');
 
-
-$router->get('rumah', 'RumahController@index');
-$router->post('rumah', 'RumahController@store');
-$router->put('rumah/{id}', 'RumahController@update');
-$router->delete('rumah/{id}', 'RumahController@destroy');
-
-
-$router->get('rumah/history', 'AdministrasiController@HistoryRumah');
-$router->get('pembayaran', 'AdministrasiController@dataPembayaran');
+$router->get('iuran', 'AdministrasiController@getIuran');
+$router->post('pembayaran', 'AdministrasiController@storePembayaran');
 

@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penghuni', function (Blueprint $table) {
+        Schema::create('warga', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('warga_id');
-            $table->string('rumah_id');
-            $table->enum('Status_Penghuni', ['Kontrak', 'Tetap']);
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+            $table->string('nama');
+            $table->string('Foto_KTP')->nullable();
+            $table->string('Nomor_Telepon')->nullable();
+            $table->enum('Status_Menikah', ['Ya', 'Tidak']);
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('penghuni');
+        Schema::dropIfExists('warga');
     }
 };

@@ -11,23 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('history_penghuni_rumah', function (Blueprint $table) {
+        Schema::create('iuran', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('rumah_id');
-            $table->string('penghuni_id');
-            $table->date('Tanggal_Mulai')->nullable();
-            $table->date('Tanggal_Selesai')->nullable();
+            $table->string('nama_iuran');
+            $table->integer('harga');
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('history_penghuni_rumah');
+        Schema::dropIfExists('iuran');
     }
 };
