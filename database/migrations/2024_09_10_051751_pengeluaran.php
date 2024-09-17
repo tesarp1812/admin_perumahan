@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->date('Tanggal_Pengeluaran');
             $table->string('Kategori_Pengeluaran');
-            $table->decimal('Jumlah', 10, 2);
+            $table->integer('Jumlah');
             $table->timestamps();
         });
     }

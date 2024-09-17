@@ -109,4 +109,39 @@ class PenghuniController extends Controller
         return Penghuni::findOrFail($id);
     }
 
+    public function storePenghuni(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'warga_id' => 'required|exists:warga,id', // Assuming `warga` table has a column `id`
+            'rumah_id' => 'required|exists:rumah,id', // Assuming `rumah` table has a column `id`
+            'Status_Penghuni' => 'required|in:Kontrak,Tetap',
+            'start_date' => 'required|date',
+        ]);
+
+        // Jika validasi gagal, kembalikan response dengan pesan kesalahan
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Ambil data yang sudah tervalidasi
+        $validatedData = $validator->validated();
+
+        // Menyimpan data penghuni
+        $penghuni = Penghuni::create([
+            'id' => (string) Str::uuid(),
+            'warga_id' => $validatedData['warga_id'],
+            'rumah_id' => $validatedData['rumah_id'],
+            'Status_Penghuni' => $validatedData['Status_Penghuni'],
+            'start_date' => $validatedData['start_date'],
+            'end_date' => $request->input('end_date'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Mengirimkan respon sukses dengan data penghuni yang baru dibuat
+        return response()->json($penghuni, Response::HTTP_CREATED);;
+    }
+
 }

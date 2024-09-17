@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('warga_id');
             $table->string('rumah_id');
             $table->enum('Status_Penghuni', ['Kontrak', 'Tetap']);
-            $table->date('start_date')->nullable();
+            $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->timestamps();
         });

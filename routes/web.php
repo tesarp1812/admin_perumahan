@@ -23,8 +23,10 @@ $router->post('warga', 'PenghuniController@storeWarga');
 $router->get('rumah', 'PenghuniController@getRumah');
 $router->get('rumah/{id}', 'PenghuniController@getRumahById');
 $router->get('penghuni', 'PenghuniController@getPenghuni');
+$router->post('penghuni', 'PenghuniController@storePenghuni');
 $router->get('penghuni/{id}', 'PenghuniController@getPenghuniById');
 
 $router->get('iuran', 'AdministrasiController@getIuran');
 $router->post('pembayaran', 'AdministrasiController@storePembayaran');
+$router->post('pengeluaran', 'AdministrasiController@storePengeluaran');
 

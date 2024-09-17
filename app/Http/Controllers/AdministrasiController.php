@@ -6,6 +6,7 @@ use App\Models\DetailPembayaran;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Iuran;
 use App\Models\Pembayaran;
+use App\Models\Pengeluaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -21,6 +22,12 @@ class AdministrasiController extends Controller
         return response()->json($iuran);
     }
 
+    /**
+     * Store created pembayaran with details in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function storePembayaran(Request $request)
     {
         // Validasi input
@@ -67,5 +74,30 @@ class AdministrasiController extends Controller
             'pembayaran' => $pembayaran,
             'detail' => $detailData,
         ], 201);
+    }
+
+    public function storePengeluaran(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'Kategori_Pengeluaran' => 'required|string',
+            'jumlah' => 'required|decimal'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $validatedData = $validator->validated();
+
+        $pengeluaran = Pengeluaran::create([
+            'id' => (string) Str::uuid(),
+            'Tanggal_Pengeluaran' => now()->format('Y-m-d'),
+            'Kategori_Pengeluaran' => $validatedData['Kategori_Pengeluaran'],
+            'jumlah' => $validatedData['jumlah']
+        ]);
+
+        return response()->json([$pengeluaran], 201);
     }
 }
