@@ -15,7 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('pembayaran_id');
             $table->string('iuran_id');
-            $table->integer('Tahun')->nullable();
+            $table->integer('bulan')->nullable();
+            $table->integer('tahun')->nullable();
             $table->timestamps();
         });
     }

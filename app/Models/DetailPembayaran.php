@@ -19,5 +19,9 @@ class DetailPembayaran extends Model
         'Tahun'
     ];
 
+    public function pembayaran()
+    {
+        return $this->belongsTo(Pembayaran::class, 'pembayaran_id', 'id');
+    }
 
 }

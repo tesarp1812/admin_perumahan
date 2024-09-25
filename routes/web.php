@@ -16,6 +16,7 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+$router->get('/test-connection', 'AdministrasiController@testConnection');
 
 $router->get('warga', 'PenghuniController@getWarga');
 $router->get('warga/{id}', 'PenghuniController@getWargaById');
@@ -27,6 +28,7 @@ $router->post('penghuni', 'PenghuniController@storePenghuni');
 $router->get('penghuni/{id}', 'PenghuniController@getPenghuniById');
 
 $router->get('iuran', 'AdministrasiController@getIuran');
+$router->get('pembayaran', 'AdministrasiController@getPembayaran');
 $router->post('pembayaran', 'AdministrasiController@storePembayaran');
 $router->post('pengeluaran', 'AdministrasiController@storePengeluaran');
 
