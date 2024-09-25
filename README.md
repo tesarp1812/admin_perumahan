@@ -1,6 +1,3 @@
-Berikut adalah template README untuk proyek Laravel Lumen Anda:
-
----
 
 # Admin Perumahan
 
