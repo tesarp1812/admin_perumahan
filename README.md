@@ -8,10 +8,11 @@ Selamat datang di proyek **Admin Perumahan**. Ini adalah API backend yang dibang
 1. [Prasyarat](#prasyarat)
 2. [Instalasi](#instalasi)
 3. [Migrasi Database](#migrasi-database)
-4. [Struktur Proyek](#struktur-proyek)
-5. [Fitur](#fitur)
-6. [Kontribusi](#kontribusi)
-7. [Lisensi](#lisensi)
+4. [Konfigurasi .env](#konfigurasi-env)
+5. [Struktur Proyek](#struktur-proyek)
+6. [Fitur](#fitur)
+7. [Kontribusi](#kontribusi)
+8. [Lisensi](#lisensi)
 
 ## Prasyarat
 
@@ -49,7 +50,18 @@ Sebelum memulai, pastikan Anda telah menginstal:
 
 5. **Konfigurasi koneksi database di berkas `.env`:**
 
-   Edit berkas `.env` untuk menyesuaikan pengaturan database Anda.
+   Edit berkas `.env` untuk menyesuaikan pengaturan database Anda. Berikut adalah contoh konfigurasi untuk MySQL:
+
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=admin_rumah
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+   Pastikan untuk mengganti `DB_PASSWORD` sesuai dengan password database Anda, jika ada.
 
 ## Migrasi Database
 
